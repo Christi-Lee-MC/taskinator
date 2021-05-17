@@ -42,13 +42,19 @@ var createTaskEl = function (taskDataObj) {
     "</span>";
   listItemEl.appendChild(taskInfoEl);
 
-  tasksToDoEl.appendChild(listItemEl);
+//   
+var taskActionsEl = createTaskActions(taskIdCounter);
+listItemEl.appendChild(taskActionsEl);
+
+tasksToDoEl.appendChild(listItemEl);
+
+//   tasksToDoEl.appendChild(listItemEl); commented out because I think it is duplicated
 
   // increase task counter for next unique id begins with 0 iterates up
   taskIdCounter++;
 };
 
-var createTaskActions = function(taskId) {
+var createTaskActions = function (taskId) {
   // create new div element with the class name "task-actions" will act as container for other elements
   var actionContainerEl = document.createElement("div");
   actionContainerEl.className = "task-actions";
@@ -67,36 +73,34 @@ var createTaskActions = function(taskId) {
   deleteButtonEl.textContent = "Delete";
   deleteButtonEl.className = "btn delete-btn";
   deleteButtonEl.setAttribute("data-task-id", taskId);
-  
+
   actionContainerEl.appendChild(deleteButtonEl);
 
-//   create dropdown aka select element
-var statusSelectEl = document.createElement("select");
-statusSelectEl.className = "select-status";
-statusSelectEl.setAttribute("name", "status-change");
-statusSelectEl.setAttribute("data-task-id", taskId);
+  //   create dropdown aka select element
+  var statusSelectEl = document.createElement("select");
+  statusSelectEl.className = "select-status";
+  statusSelectEl.setAttribute("name", "status-change");
+  statusSelectEl.setAttribute("data-task-id", taskId);
 
-// add array for choices of status
+  // add array for choices of status
 
-var statusChoices = ["To Do", "In Progress", "Completed"];
+  var statusChoices = ["To Do", "In Progress", "Completed"];
 
-// for loop to  select status 
+  // for loop to  select status
 
-for (var i = 0; i < statusChoices.length; i++) {
+  for (var i = 0; i < statusChoices.length; i++) {
     // create option element
     var statusOptionEl = document.createElement("option");
     statusOptionEl.textContent = statusChoices[i];
     statusOptionEl.setAttribute("value", statusChoices[i]);
-  
+
     // append to select
     statusSelectEl.appendChild(statusOptionEl);
   }
 
-actionContainerEl.appendChild(statusSelectEl);
+  actionContainerEl.appendChild(statusSelectEl);
 
   return actionContainerEl;
- 
 };
-
 
 formEl.addEventListener("submit", taskFormHandler);
