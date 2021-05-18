@@ -3,7 +3,6 @@ var tasksToDoEl = document.querySelector("#tasks-to-do");
 var taskIdCounter = 0;
 var pageContentEl = document.querySelector("#page-content");
 
-
 var taskFormHandler = function (event) {
   event.preventDefault();
   var taskNameInput = document.querySelector("input[name='task-name']").value;
@@ -17,11 +16,22 @@ var taskFormHandler = function (event) {
 
   formEl.reset();
 
-  // package up data as an object
+  var isEdit = formEl.hasAttribute("data-task-id");
+  // updated isEdit and taskDataObj at once
+// has data attribute, so get task id and call function to complete edit process
+if (isEdit) {
+  var taskId = formEl.getAttribute("data-task-id");
+  completeEditTask(taskNameInput, taskTypeInput, taskId);
+} 
+// no data attribute, so create object as normal and pass to createTaskEl function
+else {
   var taskDataObj = {
     name: taskNameInput,
-    type: taskTypeInput,
+    type: taskTypeInput
   };
+
+ 
+}
 
   createTaskEl(taskDataObj);
   // var taskIdCounter = 0; commented out as it is on line 3
@@ -44,13 +54,13 @@ var createTaskEl = function (taskDataObj) {
     "</span>";
   listItemEl.appendChild(taskInfoEl);
 
-//   
-var taskActionsEl = createTaskActions(taskIdCounter);
-listItemEl.appendChild(taskActionsEl);
+  //
+  var taskActionsEl = createTaskActions(taskIdCounter);
+  listItemEl.appendChild(taskActionsEl);
 
-tasksToDoEl.appendChild(listItemEl);
+  tasksToDoEl.appendChild(listItemEl);
 
-//   tasksToDoEl.appendChild(listItemEl); commented out because I think it is duplicated
+  //   tasksToDoEl.appendChild(listItemEl); commented out because I think it is duplicated
 
   // increase task counter for next unique id begins with 0 iterates up
   taskIdCounter++;
@@ -106,10 +116,65 @@ var createTaskActions = function (taskId) {
 };
 
 var taskButtonHandler = function(event) {
-    console.log(event.target);
-  };
+  // get target element from event
+  var targetEl = event.target;
 
-  pageContentEl.addEventListener("click", taskButtonHandler);
+  // edit button was clicked
+  if (targetEl.matches(".edit-btn")) {
+    var taskId = targetEl.getAttribute("data-task-id");
+    editTask(taskId);
+  } 
+  // delete button was clicked
+  else if (targetEl.matches(".delete-btn")) {
+    var taskId = targetEl.getAttribute("data-task-id");
+    deleteTask(taskId);
+  }
+};
+
+var editTask = function(taskId) {
+  formEl.setAttribute("data-task-id", taskId);
+
+// get task list item element
+var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+// get content from task name and type
+var taskName = taskSelected.querySelector("h3.task-name").textContent;
+
+
+var taskType = taskSelected.querySelector("span.task-type").textContent;
+
+document.querySelector("input[name='task-name']").value = taskName;
+document.querySelector("select[name='task-type']").value = taskType;
+document.querySelector("#save-task").textContent = "Save Task";
+};
+
+var deleteTask = function(taskId) {
+  var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+  taskSelected.remove();
+
+
+  if (event.target.matches(".delete-btn")) {
+    var taskId = event.target.getAttribute("data-task-id");
+    deleteTask(taskId);
+  }
+};
+
+var completeEditTask = function(taskName, taskType, taskId) {
+  // I put this at the end of all the functions because we made it last, does it matter where in the main I do?
+  // I thought it went top to bottom, so checking - 
+  // find the matching task list item
+var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+// set new values
+taskSelected.querySelector("h3.task-name").textContent = taskName;
+taskSelected.querySelector("span.task-type").textContent = taskType;
+
+alert("Task Updated!");
+formEl.removeAttribute("data-task-id");
+document.querySelector("#save-task").textContent = "Add Task";
+};
+
+
+pageContentEl.addEventListener("click", taskButtonHandler);
 
 formEl.addEventListener("submit", taskFormHandler);
-
