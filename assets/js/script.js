@@ -243,6 +243,7 @@ var saveTasks = function() {
 // convert task from string back into array of objects
 // iterate through tasks array and create the task elements on the page
 
+
 var loadTasks = function() {
   var savedTasks = localStorage.getItem("tasks");
 
@@ -251,13 +252,13 @@ var loadTasks = function() {
   }
 
   savedTasks = JSON.parse(savedTasks);
-}
+
 // loop through savedTasks array
 for (var i = 0; i < savedTasks.length; i++) {
   // pass each task object into the `createTaskEl()` function
   createTaskEl(savedTasks[i]);
 }
-
+}
 
 // all listeners are after here - does order matter?
 pageContentEl.addEventListener("click", taskButtonHandler);
@@ -265,3 +266,5 @@ pageContentEl.addEventListener("click", taskButtonHandler);
 formEl.addEventListener("submit", taskFormHandler);
 
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
