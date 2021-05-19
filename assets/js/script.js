@@ -178,7 +178,6 @@ for (var i = 0; i < tasks.length; i++) {
 // reassign tasks array to be the same as updatedTaskArr
 tasks = updatedTaskArr;
 saveTasks()
-
 };
 
 var completeEditTask = function (taskName, taskType, taskId) {
@@ -238,6 +237,25 @@ saveTasks()
 
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+// create loadTasks()
+// retrieve task items from localStorage
+// convert task from string back into array of objects
+// iterate through tasks array and create the task elements on the page
+
+var loadTasks = function() {
+  var savedTasks = localStorage.getItem("tasks");
+
+  if (!savedTasks) {
+    return false;
+  }
+
+  savedTasks = JSON.parse(savedTasks);
+}
+// loop through savedTasks array
+for (var i = 0; i < savedTasks.length; i++) {
+  // pass each task object into the `createTaskEl()` function
+  createTaskEl(savedTasks[i]);
 }
 
 
